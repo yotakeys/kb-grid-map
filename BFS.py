@@ -125,5 +125,5 @@ if __name__ == "__main__":
 
     bfs.search(bfs.start_node)
     bfs.print_map(show_explored=True)
-    print(bfs.minimum_steps)
-    print(len(bfs.explored))
+    print("Cost Solved :", bfs.minimum_steps)
+    print("Node Explored :",len(bfs.explored)-1)

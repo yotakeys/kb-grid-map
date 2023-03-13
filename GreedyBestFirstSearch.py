@@ -142,5 +142,5 @@ if __name__ == "__main__":
 
     greedyBestFS.search(greedyBestFS.start_node)
     greedyBestFS.print_map(show_explored = True)
-    print(greedyBestFS.minimum_steps)
-    print(len(greedyBestFS.explored))
+    print("Cost Solved :", greedyBestFS.minimum_steps)
+    print("Node Explored :",len(greedyBestFS.explored)-1)

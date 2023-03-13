@@ -1,12 +1,11 @@
 from source import Environment
-import math
 
 class Node():
-    def __init__(self, coord: tuple, parent, action: int, hx: float, gx: int):
+    def __init__(self, coord: tuple, parent, action: int, gx: int):
         self.coord = coord
         self.parent = parent
         self.action = action
-        self.hx = hx
+
         self.gx = gx
 
 class Frontier():
@@ -20,7 +19,7 @@ class Frontier():
         min = 1000000
         min_node = self.frontier[0]
         for node in self.frontier:
-            f = node.hx + node.gx
+            f = node.gx
             if f < min and node.coord not in explored:
                 min = f
                 min_node = node
@@ -39,7 +38,7 @@ class Frontier():
     def length(self):
         return len(self.frontier)
 
-class AStarSearch():
+class UCS():
     def __init__(self,
                 searched = 9, 
                 shortest = 5) -> None:
@@ -61,9 +60,7 @@ class AStarSearch():
         self.xlen = len(self.map[0])
 
         self.find_start_goal()
-        x1,y1 = self.start_index
-        x2,y2 = self.goal_index
-        self.start_node = Node(self.start_index, None, None, self.countHx(x1,x2,y1,y2), 0)
+        self.start_node = Node(self.start_index, None, None, 0)
 
         self.explored.append(self.start_index)
         
@@ -90,10 +87,6 @@ class AStarSearch():
             else:
                 print("".join(str(i)).replace(self.searched, self.path))
 
-    def countHx(self, x1,x2,y1,y2):
-        d = math.sqrt((x1-x2)**2 + (y1-y2)**2)
-        return d
-
     def search(self, node: Node):
         self.explored.append(node.coord)
         
@@ -106,28 +99,23 @@ class AStarSearch():
 
                 tmp = parent_node
                 parent_node = tmp.parent
-
             return
-        
+
         i, j = node.coord
         if self.map[i][j] != self.start:
             self.map[i][j] = self.searched
 
         if self.inside(i-1, j):
-            x2,y2 = self.goal_index
-            tmp = Node((i-1, j), node, "up", self.countHx(i-1,j,x2,y2), node.gx + 1)
+            tmp = Node((i-1, j), node, "up", node.gx + 1)
             self.frontier.add(tmp)
         if self.inside(i, j+1):
-            x2,y2 = self.goal_index
-            tmp = Node((i, j+1), node, "right", self.countHx(i,j+1,x2,y2), node.gx + 1)
+            tmp = Node((i, j+1), node, "right", node.gx + 1)
             self.frontier.add(tmp)
         if self.inside(i+1, j):
-            x2,y2 = self.goal_index
-            tmp = Node((i+1, j), node, "down", self.countHx(i+1,j,x2,y2), node.gx + 1)
+            tmp = Node((i+1, j), node, "down", node.gx + 1)
             self.frontier.add(tmp)
         if self.inside(i, j-1):
-            x2,y2 = self.goal_index
-            tmp = Node((i, j-1), node, "left", self.countHx(i,j-1,x2,y2), node.gx + 1)
+            tmp = Node((i, j-1), node, "left", node.gx + 1)
             self.frontier.add(tmp)
         
         searched_node = self.frontier.remove(self.explored)
@@ -137,9 +125,9 @@ class AStarSearch():
 
 if __name__ == "__main__":
     
-    aStarSearch = AStarSearch()
+    ucs = UCS()
 
-    aStarSearch.search(aStarSearch.start_node)
-    aStarSearch.print_map(show_explored = True)
-    print("Cost Solved :", aStarSearch.minimum_steps)
-    print("Node Explored :",len(aStarSearch.explored)-1)
+    ucs.search(ucs.start_node)
+    ucs.print_map(show_explored = True)
+    print("Cost Solved :", ucs.minimum_steps)
+    print("Node Explored :",len(ucs.explored)-1)
