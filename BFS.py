@@ -51,8 +51,6 @@ class BFS():
         self.xlen = len(self.map[0])
 
         self.find_start_goal()
-        x1, y1 = self.start_index
-        x2, y2 = self.goal_index
         self.start_node = Node(self.start_index, None,
                                None)
 
@@ -125,5 +123,5 @@ if __name__ == "__main__":
 
     bfs.search(bfs.start_node)
     bfs.print_map(show_explored=True)
-    print("Cost Solved :", bfs.minimum_steps)
+    print("Cost Solved :", bfs.minimum_steps + 1)
     print("Node Explored :",len(bfs.explored)-1)

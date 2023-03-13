@@ -129,5 +129,5 @@ if __name__ == "__main__":
 
     ucs.search(ucs.start_node)
     ucs.print_map(show_explored = True)
-    print("Cost Solved :", ucs.minimum_steps)
+    print("Cost Solved :", ucs.minimum_steps+1)
     print("Node Explored :",len(ucs.explored)-1)

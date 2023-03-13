@@ -116,6 +116,5 @@ if __name__ == "__main__":
 
     dfs.search(dfs.start_node)
     dfs.print_map(show_explored = True)
-    print("Cost Solved :", dfs.minimum_steps)
-    print("Node Explored :",len(dfs.explored)-1)
-    
+    print("Cost Solved :", dfs.minimum_steps + 1)
+    print("Node Explored :",len(dfs.explored)-1)  

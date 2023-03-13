@@ -141,5 +141,5 @@ if __name__ == "__main__":
 
     aStarSearch.search(aStarSearch.start_node)
     aStarSearch.print_map(show_explored = True)
-    print("Cost Solved :", aStarSearch.minimum_steps)
+    print("Cost Solved :", aStarSearch.minimum_steps + 1)
     print("Node Explored :",len(aStarSearch.explored)-1)
