@@ -1,9 +1,5 @@
 class Environment():
-    """
-    0 = Wall,
-    1 = Path
-    """
-    
+
     grid_map = [
         [0,0,0,0,0,0,0,0,0,0,0],
         [0,0,0,0,0,1,1,1,1,1,0],
@@ -32,15 +28,7 @@ class Environment():
         [0,0,0,0,0,0,0,0,0,0,0],
     ]
 
-    start_row = 2
-    start_column = 1
-
-    goal_row = 20
-    goal_column = 9
-    
     path = 1
     wall = 0
     start = 2
     goal = 3
-    
-    
