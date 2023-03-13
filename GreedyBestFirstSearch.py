@@ -1,4 +1,5 @@
 from source import Environment
+import math
 
 class Node():
     def __init__(self, coord: tuple, parent, action: int, hx: float):
@@ -14,16 +15,23 @@ class Frontier():
     def add(self, node):
         self.frontier.append(node)
 
+    def findMin(self):
+        min = 1000000
+        for node in self.frontier:
+            if node.hx < min:
+                min = node.hx
+        return min
+        
     def remove(self):
         if len(self.frontier) == 0:
             raise Exception("Empty frontier")
-        else:
-            
-            
-            
-            node = self.frontier[0]
-            self.frontier = self.frontier[1:]
-            return node
+        else:  
+            minHx = self.findMin()
+            for i in range(self.length()):
+                if self.frontier[i].hx == minHx:
+                    node = self.frontier[i]
+                    self.frontier.pop(i)
+                    return node
 
     def length(self):
         return len(self.frontier)
@@ -50,7 +58,9 @@ class GreedyBestFS():
         self.xlen = len(self.map[0])
 
         self.find_start_goal()
-        self.start_node = Node(self.start_index, None, None)
+        x1,y1 = self.start_index
+        x2,y2 = self.goal_index
+        self.start_node = Node(self.start_index, None, None, self.countHx(x1,x2,y1,y2))
 
         self.explored.append(self.start_index)
         
@@ -77,6 +87,10 @@ class GreedyBestFS():
             else:
                 print("".join(str(i)).replace(self.searched, self.path))
 
+    def countHx(self, x1,x2,y1,y2):
+        d = math.sqrt((x1-x2)**2 + (y1-y2)**2)
+        return d
+
     def search(self, node: Node):
         self.explored.append(node.coord)
         
@@ -100,16 +114,20 @@ class GreedyBestFS():
             self.map[i][j] = self.searched
 
         if self.inside(i-1, j):
-            tmp = Node((i-1, j), node, "up")
+            x2,y2 = self.goal_index
+            tmp = Node((i-1, j), node, "up", self.countHx(i-1,j,x2,y2))
             self.frontier.add(tmp)
         if self.inside(i, j+1):
-            tmp = Node((i, j+1), node, "right")
+            x2,y2 = self.goal_index
+            tmp = Node((i, j+1), node, "right", self.countHx(i,j+1,x2,y2))
             self.frontier.add(tmp)
         if self.inside(i+1, j):
-            tmp = Node((i+1, j), node, "down")
+            x2,y2 = self.goal_index
+            tmp = Node((i+1, j), node, "down", self.countHx(i+1,j,x2,y2))
             self.frontier.add(tmp)
         if self.inside(i, j-1):
-            tmp = Node((i, j-1), node, "left")
+            x2,y2 = self.goal_index
+            tmp = Node((i, j-1), node, "left", self.countHx(i,j-1,x2,y2))
             self.frontier.add(tmp)
 
         self.search(self.frontier.remove())
