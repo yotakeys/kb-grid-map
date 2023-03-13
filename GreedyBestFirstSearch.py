@@ -15,22 +15,24 @@ class Frontier():
     def add(self, node):
         self.frontier.append(node)
 
-    def findMinNode(self):
+    def findMinNode(self, explored):
         min = 1000000
         min_node = self.frontier[0]
         for node in self.frontier:
-            if node.hx < min:
+            if node.hx < min  and node.coord not in explored:
                 min = node.hx
                 min_node = node
         return min_node
         
-    def remove(self):
+    def remove(self, explored):
         if len(self.frontier) == 0:
             raise Exception("Empty frontier")
         else:  
-            minNode = self.findMinNode()
-            self.frontier.remove(minNode)
-            return minNode
+            minNode = self.findMinNode(explored)
+            if minNode is not None:
+                self.frontier.remove(minNode)
+                return minNode
+            return None
 
     def length(self):
         return len(self.frontier)
@@ -129,7 +131,10 @@ class GreedyBestFS():
             tmp = Node((i, j-1), node, "left", self.countHx(i,j-1,x2,y2))
             self.frontier.add(tmp)
 
-        self.search(self.frontier.remove())
+        searched_node = self.frontier.remove(self.explored)
+        
+        if searched_node is not None:
+            self.search(searched_node)
 
 if __name__ == "__main__":
     
@@ -138,3 +143,4 @@ if __name__ == "__main__":
     greedyBestFS.search(greedyBestFS.start_node)
     greedyBestFS.print_map(show_explored = True)
     print(greedyBestFS.minimum_steps)
+    print(len(greedyBestFS.explored))

@@ -30,7 +30,7 @@ class DFS():
                 shortest = 5) -> None:
 
         self.env = Environment()
-        
+        self.minimum_steps = 0
         self.wall = self.env.wall
         self.path = self.env.path
         self.start = self.env.start
@@ -117,4 +117,5 @@ if __name__ == "__main__":
     dfs.search(dfs.start_node)
     dfs.print_map(show_explored = True)
     print(dfs.minimum_steps)
+    print(len(dfs.explored))
     

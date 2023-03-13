@@ -15,13 +15,15 @@ class Frontier():
     def add(self, node):
         self.frontier.append(node)
 
-    def remove(self):
+    def remove(self, explored):
         if len(self.frontier) == 0:
             raise Exception("Empty frontier")
         else:
-            node = self.frontier[0]
-            self.frontier = self.frontier[1:]
-            return node
+            for node in self.frontier:
+                if (node.coord in explored):
+                    continue
+                self.frontier.remove(node)
+                return node
 
     def length(self):
         return len(self.frontier)
@@ -33,7 +35,7 @@ class BFS():
                  shortest=5) -> None:
 
         self.env = Environment()
-
+        self.minimum_steps = 0
         self.wall = self.env.wall
         self.path = self.env.path
         self.start = self.env.start
@@ -113,11 +115,15 @@ class BFS():
             tmp = Node((i, j-1), node, "left")
             self.frontier.add(tmp)
 
-        self.search(self.frontier.remove())
+        searched_node = self.frontier.remove(self.explored)
+        
+        if searched_node is not None:
+            self.search(searched_node)
 
+if __name__ == "__main__":
+    bfs = BFS()
 
-bfs = BFS()
-
-bfs.search(bfs.start_node)
-bfs.print_map(show_explored=True)
-print(bfs.minimum_steps)
+    bfs.search(bfs.start_node)
+    bfs.print_map(show_explored=True)
+    print(bfs.minimum_steps)
+    print(len(bfs.explored))

@@ -16,23 +16,25 @@ class Frontier():
     def add(self, node):
         self.frontier.append(node)
 
-    def findMinNode(self):
+    def findMinNode(self, explored):
         min = 1000000
         min_node = self.frontier[0]
         for node in self.frontier:
             f = node.hx + node.gx
-            if f < min:
+            if f < min and node.coord not in explored:
                 min = f
                 min_node = node
         return min_node
         
-    def remove(self):
+    def remove(self, explored):
         if len(self.frontier) == 0:
             raise Exception("Empty frontier")
         else:  
-            minNode = self.findMinNode()
-            self.frontier.remove(minNode)
-            return minNode
+            minNode = self.findMinNode(explored)
+            if minNode is not None:
+                self.frontier.remove(minNode)
+                return minNode
+            return None
 
     def length(self):
         return len(self.frontier)
@@ -77,7 +79,7 @@ class AStarSearch():
     def inside(self, i, j) -> bool:
         if ((i >= 0 and i < self.ylen) and (j >= 0 and j < self.xlen)):
             if self.map[i][j] != self.wall:
-                if not ((i, j) in self.explored):
+                if ((i, j) not in self.explored):
                     return True
         return False
 
@@ -119,13 +121,23 @@ class AStarSearch():
             x2,y2 = self.goal_index
             tmp = Node((i, j-1), node, "left", self.countHx(i,j-1,x2,y2), node.gx + 1)
             self.frontier.add(tmp)
-
-        self.search(self.frontier.remove())
+        
+        searched_node = self.frontier.remove(self.explored)
+        
+        if searched_node is not None:
+            self.search(searched_node)
 
 if __name__ == "__main__":
     
-    AStarSearch = AStarSearch()
+    aStarSearch = AStarSearch()
 
-    AStarSearch.search(AStarSearch.start_node)
-    AStarSearch.print_map(show_explored = True)
-    print(AStarSearch.minimum_steps)
+    aStarSearch.search(aStarSearch.start_node)
+    aStarSearch.print_map(show_explored = True)
+    print(aStarSearch.minimum_steps)
+    # count=0
+    # for row in aStarSearch.map:
+    #     for c in row:
+    #         if c == 1:
+    #             count +=1
+    # print(count)
+    print(len(aStarSearch.explored))
