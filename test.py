@@ -8,6 +8,9 @@ if __name__ == "__main__" :
     print("Goal row : ",env.goal_row)
     print("Goal column : ",env.goal_column)
     
+    print("Start :",env.grid_map[env.start_row][env.start_column])
+    print("Goal : ",env.grid_map[env.goal_row][env.goal_column])
+    
     # change value
     env.grid_map[env.start_row][env.start_column] = -1
     print(env.grid_map[env.start_row][env.start_column])
