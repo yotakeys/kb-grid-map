@@ -2,11 +2,12 @@ from source import Environment
 import math
 
 class Node():
-    def __init__(self, coord: tuple, parent, action: int, hx: float):
+    def __init__(self, coord: tuple, parent, action: int, hx: float, gx: int):
         self.coord = coord
         self.parent = parent
         self.action = action
         self.hx = hx
+        self.gx = gx
 
 class Frontier():
     def __init__(self):
@@ -19,8 +20,9 @@ class Frontier():
         min = 1000000
         min_node = self.frontier[0]
         for node in self.frontier:
-            if node.hx < min:
-                min = node.hx
+            f = node.hx + node.gx
+            if f < min:
+                min = f
                 min_node = node
         return min_node
         
@@ -35,7 +37,7 @@ class Frontier():
     def length(self):
         return len(self.frontier)
 
-class GreedyBestFS():
+class AStarSearch():
     def __init__(self,
                 searched = 9, 
                 shortest = 5) -> None:
@@ -59,7 +61,7 @@ class GreedyBestFS():
         self.find_start_goal()
         x1,y1 = self.start_index
         x2,y2 = self.goal_index
-        self.start_node = Node(self.start_index, None, None, self.countHx(x1,x2,y1,y2))
+        self.start_node = Node(self.start_index, None, None, self.countHx(x1,x2,y1,y2), 0)
 
         self.explored.append(self.start_index)
         
@@ -94,47 +96,36 @@ class GreedyBestFS():
         self.explored.append(node.coord)
         
         if node.coord == self.goal_index:
-            parent_node = node.parent
-            steps = 1
-            while parent_node.parent != None:
-                i, j = parent_node.coord
-                self.map[i][j] = self.shortest
-                steps += 1
-
-                tmp = parent_node
-                parent_node = tmp.parent
-
-            self.minimum_steps = steps
+            self.minimum_steps = node.gx
             return
 
         i, j = node.coord
-        
         if self.map[i][j] != self.start:
             self.map[i][j] = self.searched
 
         if self.inside(i-1, j):
             x2,y2 = self.goal_index
-            tmp = Node((i-1, j), node, "up", self.countHx(i-1,j,x2,y2))
+            tmp = Node((i-1, j), node, "up", self.countHx(i-1,j,x2,y2), node.gx + 1)
             self.frontier.add(tmp)
         if self.inside(i, j+1):
             x2,y2 = self.goal_index
-            tmp = Node((i, j+1), node, "right", self.countHx(i,j+1,x2,y2))
+            tmp = Node((i, j+1), node, "right", self.countHx(i,j+1,x2,y2), node.gx + 1)
             self.frontier.add(tmp)
         if self.inside(i+1, j):
             x2,y2 = self.goal_index
-            tmp = Node((i+1, j), node, "down", self.countHx(i+1,j,x2,y2))
+            tmp = Node((i+1, j), node, "down", self.countHx(i+1,j,x2,y2), node.gx + 1)
             self.frontier.add(tmp)
         if self.inside(i, j-1):
             x2,y2 = self.goal_index
-            tmp = Node((i, j-1), node, "left", self.countHx(i,j-1,x2,y2))
+            tmp = Node((i, j-1), node, "left", self.countHx(i,j-1,x2,y2), node.gx + 1)
             self.frontier.add(tmp)
 
         self.search(self.frontier.remove())
 
 if __name__ == "__main__":
     
-    greedyBestFS = GreedyBestFS()
+    AStarSearch = AStarSearch()
 
-    greedyBestFS.search(greedyBestFS.start_node)
-    greedyBestFS.print_map(show_explored = True)
-    print(greedyBestFS.minimum_steps)
+    AStarSearch.search(AStarSearch.start_node)
+    AStarSearch.print_map(show_explored = True)
+    print(AStarSearch.minimum_steps)
